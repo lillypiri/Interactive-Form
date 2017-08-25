@@ -3,7 +3,7 @@ var addedField = document.createElement("INPUT");
 
 // when other is selected, it calls the addOtherField function
 document.addEventListener('DOMContentLoaded',function() {
-    document.querySelector('select[name="user_title"]').onchange=changeEventHandler;
+    document.querySelector('select[name="user_title"]').addEventListener('change', changeEventHandler);
 },false);
 
 function changeEventHandler(event) {
@@ -46,7 +46,7 @@ function hidePaymentFields() {
 hidePaymentFields();
 
 document.addEventListener('DOMContentLoaded',function() {
-    document.querySelector('select[name="user_payment"]').onchange=changePaymentHandler;
+    document.querySelector('select[name="user_payment"]').addEventListener('change', changePaymentHandler);
 },false);
 
 function changePaymentHandler(event) {
