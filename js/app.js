@@ -1,5 +1,6 @@
 var fieldset = document.getElementsByTagName('fieldset')[0];
 var addedField = document.createElement("INPUT");
+var addedFieldExists = document.getElementsByClassName("added-field");
 
 // when other is selected, it calls the addOtherField function
 document.addEventListener('DOMContentLoaded',function() {
@@ -12,7 +13,10 @@ function changeEventHandler(event) {
         addOtherField();
     } else {
         console.log('You are a ' + event.target.value + '.');
+        if (addedFieldExists.length > 0) {
             fieldset.removeChild(addedField);
+        }
+
     }
 }
 
