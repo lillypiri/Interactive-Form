@@ -1,5 +1,6 @@
 var fieldset = document.getElementsByTagName('fieldset')[0];
-var addedField = document.createElement("INPUT");
+var addedField = document.createElement("input");
+var joblabel = document.createElement('label');
 
 // when other is selected, it calls the addOtherField function
 document.addEventListener('DOMContentLoaded',function() {
@@ -14,23 +15,20 @@ function changeEventHandler(event) {
         console.log('You are a ' + event.target.value + '.');
         if (addedField.parentElement !== null)  {
             fieldset.removeChild(addedField);
+            fieldset.removeChild(joblabel);
         }
-
     }
 }
-
-
 
 //TODO when other is selected you have to check if the extra input is already there
 
 
 // adds input field when 'other' job title is selected
 function addOtherField() {
-    const label = document.createElement('label');
-    label.textContent = 'Your job role';
+    joblabel.textContent = 'Your job role';
     addedField.setAttribute("type", "text");
     addedField.setAttribute("class", "added-field");
-    fieldset.appendChild(label)
+    fieldset.appendChild(joblabel)
     fieldset.appendChild(addedField);
 }
 
