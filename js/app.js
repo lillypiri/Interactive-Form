@@ -1,7 +1,7 @@
 var fieldset = document.getElementsByTagName('fieldset')[0];
 var addedField = document.createElement("input");
 var joblabel = document.createElement('label');
-
+console.log(document.getElementById("cornflowerblue"));
 // when other is selected, it calls the addOtherField function
 document.addEventListener('DOMContentLoaded',function() {
     document.querySelector('select[name="user_title"]').addEventListener('change', changeEventHandler);
@@ -41,6 +41,39 @@ function addOtherField() {
 //     }
 // }
 
+function hideColorOptions() {
+    document.getElementById("selecttheme").style.display = "block";
+    document.getElementById("cornflowerblue").style.display = "none";
+    document.getElementById("darkslategrey").style.display = "none";
+    document.getElementById("gold").style.display = "none";
+    document.getElementById("tomato").style.display = "none";
+    document.getElementById("steelblue").style.display = "none";
+    document.getElementById("dimgrey").style.display = "none";
+}
+hideColorOptions();
+
+document.addEventListener('DOMContentLoaded',function() {
+    document.querySelector('select[name="user_design"]').addEventListener('change', changeDesignHandler);
+},false);
+
+// T-shirt color options are revealed based on the design selected.
+function changeDesignHandler(event) {
+    hideColorOptions();
+    console.log(event.target.value);
+    if (event.target.value === 'selectdesign') {
+        hideColorOptions();
+    } else if (event.target.value === 'js puns') {
+        document.getElementById("selecttheme").style.display = "none";
+        document.getElementById("cornflowerblue").style.display = "block";
+        document.getElementById("darkslategrey").style.display = "block";
+        document.getElementById("gold").style.display = "block";
+    } else if (event.target.value) {
+        document.getElementById("selecttheme").style.display = "none";
+        document.getElementById("tomato").style.display = "block";
+        document.getElementById("steelblue").style.display = "block";
+        document.getElementById("dimgrey").style.display = "block";
+    }
+}
 
 // When we choose a payment option, the chosen payment section is revealed and the other payment sections are hidden
 
