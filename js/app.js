@@ -32,9 +32,6 @@ function addOtherField() {
 }
 
 
-
-// No color options appear in the “Color” menu until the user chooses a T-Shirt theme. The “Color” menu reads “Please select a T-shirt theme” until a theme is selected from the “Design” menu.
-
 // When we choose a payment option, the chosen payment section is revealed and the other payment sections are hidden
 
 
@@ -60,3 +57,36 @@ function changePaymentHandler(event) {
         document.getElementById("paypal-div").style.display = "block";
     }
 }
+
+
+// User cannot select two activities that are at the same time
+const jsf = document.getElementById('jsframeworks');
+const express = document.getElementById('express');
+const node = document.getElementById('node');
+const jslib = document.getElementById('jslib');
+
+jsf.addEventListener('change', (e) => {
+    // console.log(e.target.checked);
+    const checkbox = event.target;
+    const checked = checkbox.checked;
+    checked ? express.disabled = event.target.checked : express.disabled = false;
+});
+
+express.addEventListener('change', (e) => {
+    const checkbox = event.target;
+    const checked = checkbox.checked;
+    checked ? jsf.disabled = true : jsf.disabled = false;
+});
+
+node.addEventListener('change', (e) => {
+    const checkbox = event.target;
+    const checked = checkbox.checked;
+    checked ? jslib.disabled = true : jslib.disabled = false;
+});
+
+
+jslib.addEventListener('change', (e) => {
+    const checkbox = event.target;
+    const checked = checkbox.checked;
+    checked ? node.disabled = true : node.disabled = false;
+})
