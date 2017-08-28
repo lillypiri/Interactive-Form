@@ -35,12 +35,6 @@ function addOtherField() {
 
 
 // No color options appear in the “Color” menu until the user chooses a T-Shirt theme. The “Color” menu reads “Please select a T-shirt theme” until a theme is selected from the “Design” menu.
-// function hideColorOptions() {
-//     if (design = select theme) {
-//         hide color options
-//     }
-// }
-
 function hideColorOptions() {
     document.getElementById("selecttheme").style.display = "block";
     document.getElementById("cornflowerblue").style.display = "none";
@@ -52,8 +46,10 @@ function hideColorOptions() {
 }
 hideColorOptions();
 
+var tshirtSelect = document.querySelector('select[name="user_design"]');
+
 document.addEventListener('DOMContentLoaded',function() {
-    document.querySelector('select[name="user_design"]').addEventListener('change', changeDesignHandler);
+    tshirtSelect.addEventListener('change', changeDesignHandler);
 },false);
 
 // T-shirt color options are revealed based on the design selected.
@@ -62,18 +58,22 @@ function changeDesignHandler(event) {
     console.log(event.target.value);
     if (event.target.value === 'selectdesign') {
         hideColorOptions();
+        document.getElementById('color').options[0].selected = "selected";
     } else if (event.target.value === 'js puns') {
         document.getElementById("selecttheme").style.display = "none";
         document.getElementById("cornflowerblue").style.display = "block";
+        document.getElementById("cornflowerblue").selected = "selected";
         document.getElementById("darkslategrey").style.display = "block";
         document.getElementById("gold").style.display = "block";
-    } else if (event.target.value) {
+    } else if (event.target.value === 'heart js') {
         document.getElementById("selecttheme").style.display = "none";
         document.getElementById("tomato").style.display = "block";
+        document.getElementById("tomato").selected = "selected";
         document.getElementById("steelblue").style.display = "block";
         document.getElementById("dimgrey").style.display = "block";
     }
 }
+
 
 // When we choose a payment option, the chosen payment section is revealed and the other payment sections are hidden
 
