@@ -114,8 +114,17 @@ function changePaymentHandler(event) {
     if (event.target.value === 'credit card') {
         document.getElementById("credit-card").style.display = "block";
         ccreq.setAttribute('required', '');
+        ccreq.setAttribute('type', 'number');
+        ccreq.setAttribute('min', 0000000000000);
+        ccreq.setAttribute('max', 9999999999999999);
         cczip.setAttribute('required', '');
+        cczip.setAttribute('type', 'number');
+        cczip.setAttribute('min', 00000);
+        cczip.setAttribute('max', 99999);
         cccvv.setAttribute('required', '');
+        cccvv.setAttribute('type', 'number');
+        cccvv.setAttribute('min', 000);
+        cccvv.setAttribute('max', 999);
     } else if (event.target.value === 'bitcoin') {
         document.getElementById("bitcoin-div").style.display = "block";
     } else if (event.target.value === 'paypal') {
