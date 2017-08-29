@@ -20,6 +20,17 @@ function changeEventHandler(event) {
     }
 }
 
+// var email = document.getElementById("mail");
+//
+// email.addEventListener("input", function (event) {
+//   if (email.validity.typeMismatch) {
+//     email.setCustomValidity("I expect a valid e-mail format, darling!");
+//   } else {
+//     email.setCustomValidity("Please enter an email address.");
+//   }
+// });
+
+
 //TODO when other is selected you have to check if the extra input is already there
 
 
@@ -91,9 +102,20 @@ document.addEventListener('DOMContentLoaded',function() {
 
 function changePaymentHandler(event) {
     hidePaymentFields();
+    const ccreq = document.getElementById('cc-num');
+    const cczip = document.getElementById('zip');
+    const cccvv = document.getElementById('cvv');
+    ccreq.removeAttribute('required');
+    cczip.removeAttribute('required');
+    cccvv.removeAttribute('required');
+
+
     console.log(event.target.value);
     if (event.target.value === 'credit card') {
         document.getElementById("credit-card").style.display = "block";
+        ccreq.setAttribute('required', '');
+        cczip.setAttribute('required', '');
+        cccvv.setAttribute('required', '');
     } else if (event.target.value === 'bitcoin') {
         document.getElementById("bitcoin-div").style.display = "block";
     } else if (event.target.value === 'paypal') {
