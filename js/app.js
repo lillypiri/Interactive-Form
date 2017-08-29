@@ -138,24 +138,59 @@ const jsf = document.getElementById('jsframeworks');
 const express = document.getElementById('express');
 const node = document.getElementById('node');
 const jslib = document.getElementById('jslib');
+const mainconf = document.getElementById('mainconf');
+const buildtools = document.getElementById('buildtools');
+const npmw = document.getElementById('npmw');
 
 
 // both on Tuesday 9am-12pm
 jsf.addEventListener('change', (e) => {
     // console.log(e.target.checked);
     express.disabled = event.target.checked;
+    submitButton.removeAttribute('disabled');
 });
 
 express.addEventListener('change', (e) => {
     jsf.disabled = event.target.checked;
+    submitButton.removeAttribute('disabled');
 });
 
 
 // both on Tuesday 1pm-4pm
 node.addEventListener('change', (e) => {
     jslib.disabled = event.target.checked;
+    submitButton.removeAttribute('disabled');
 });
 
 jslib.addEventListener('change', (e) => {
     node.disabled = event.target.checked;
+    submitButton.removeAttribute('disabled');
 })
+
+mainconf.addEventListener('change', (e) => {
+    submitButton.removeAttribute('disabled');
+})
+buildtools.addEventListener('change', (e) => {
+    submitButton.removeAttribute('disabled');
+})
+npmw.addEventListener('change', (e) => {
+    submitButton.removeAttribute('disabled');
+})
+
+// we have to select an activity before the page will submit 
+const submitButton = document.querySelector('button[type="submit"]')
+
+document.addEventListener('DOMContentLoaded',function() {
+    submitButton.addEventListener('click', validateActivity);
+},false);
+
+
+function validateActivity(event) {
+    var checked = jsf.checked || express.checked || node.checked || jslib.checked || mainconf.checked || buildtools.checked || npmw.checked;
+    if (checked === true) {
+        ''
+    } else {
+        submitButton.setAttribute('disabled', '');
+        alert("please select an activity");
+    };
+}
