@@ -183,18 +183,20 @@ document.addEventListener('DOMContentLoaded',function() {
     submitButton.addEventListener('click', validateActivity);
 },false);
 
+const selectActivity = document.createElement("label");
+const activitiesFieldset = document.getElementsByTagName('fieldset')[2];
+
 function activitiesError() {
-    const selectActivity = document.createElement("label");
     selectActivity.textContent = "Please select an activity";
     selectActivity.setAttribute('type', 'text');
     selectActivity.setAttribute('class', 'error');
-    document.getElementsByTagName('fieldset')[2].appendChild(selectActivity);
+    activitiesFieldset.appendChild(selectActivity);
 }
 
 function validateActivity(event) {
     var checked = jsf.checked || express.checked || node.checked || jslib.checked || mainconf.checked || buildtools.checked || npmw.checked;
     if (checked === true) {
-        ''
+        activitiesFieldset.removeChild(selectActivity);
     } else {
         submitButton.setAttribute('disabled', '');
         activitiesError();
