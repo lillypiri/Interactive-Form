@@ -180,7 +180,10 @@ npmw.addEventListener('change', (e) => {
 const submitButton = document.querySelector('button[type="submit"]')
 
 document.addEventListener('DOMContentLoaded',function() {
-    submitButton.addEventListener('click', validateActivity);
+    submitButton.addEventListener('click', () => {
+        validateActivity();
+        checkName();
+    });
 },false);
 
 const selectActivity = document.createElement("label");
@@ -202,3 +205,19 @@ function validateActivity(event) {
         activitiesError();
     };
 }
+
+const name = document.getElementById('name');
+const nameLabel = document.getElementsByTagName('label')[0];
+const nameError = document.createElement('label');
+
+function checkName() {
+    console.log(name.value);
+    if (name.value === '' || name === null) {
+        nameError.textContent = "Please enter a name";
+        nameError.setAttribute('type', 'text');
+        nameError.setAttribute('class', 'error');
+        nameLabel.appendChild(nameError);
+    } else {
+        nameLabel.removeChild(nameError);
+    }
+};
