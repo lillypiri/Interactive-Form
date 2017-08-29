@@ -187,3 +187,7 @@ button:hover {
 #name:focus {
   color: teal;
 }
+
+.error {
+  color: red;
+}

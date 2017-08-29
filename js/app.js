@@ -43,8 +43,6 @@ function addOtherField() {
     fieldset.appendChild(addedField);
 }
 
-
-
 // No color options appear in the “Color” menu until the user chooses a T-Shirt theme. The “Color” menu reads “Please select a T-shirt theme” until a theme is selected from the “Design” menu.
 function hideColorOptions() {
     document.getElementById("selecttheme").style.display = "block";
@@ -167,6 +165,7 @@ jslib.addEventListener('change', (e) => {
     submitButton.removeAttribute('disabled');
 })
 
+// other activities
 mainconf.addEventListener('change', (e) => {
     submitButton.removeAttribute('disabled');
 })
@@ -177,13 +176,20 @@ npmw.addEventListener('change', (e) => {
     submitButton.removeAttribute('disabled');
 })
 
-// we have to select an activity before the page will submit 
+// we have to select an activity before the page will submit
 const submitButton = document.querySelector('button[type="submit"]')
 
 document.addEventListener('DOMContentLoaded',function() {
     submitButton.addEventListener('click', validateActivity);
 },false);
 
+function activitiesError() {
+    const selectActivity = document.createElement("label");
+    selectActivity.textContent = "Please select an activity";
+    selectActivity.setAttribute('type', 'text');
+    selectActivity.setAttribute('class', 'error');
+    document.getElementsByTagName('fieldset')[2].appendChild(selectActivity);
+}
 
 function validateActivity(event) {
     var checked = jsf.checked || express.checked || node.checked || jslib.checked || mainconf.checked || buildtools.checked || npmw.checked;
@@ -191,6 +197,6 @@ function validateActivity(event) {
         ''
     } else {
         submitButton.setAttribute('disabled', '');
-        alert("please select an activity");
+        activitiesError();
     };
 }
