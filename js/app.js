@@ -1,4 +1,3 @@
-var fieldset = document.getElementsByTagName('fieldset')[0];
 var addedField = document.createElement("input");
 var joblabel = document.createElement('label');
 console.log(document.getElementById("cornflowerblue"));
@@ -20,18 +19,7 @@ function changeEventHandler(event) {
     }
 }
 
-// var email = document.getElementById("mail");
-//
-// email.addEventListener("input", function (event) {
-//   if (email.validity.typeMismatch) {
-//     email.setCustomValidity("I expect a valid e-mail format, darling!");
-//   } else {
-//     email.setCustomValidity("Please enter an email address.");
-//   }
-// });
-
-
-//TODO when other is selected you have to check if the extra input is already there
+//TODO  CC error field limits & errors // does it work w/out js
 
 
 // adds input field when 'other' job title is selected
@@ -113,15 +101,15 @@ function changePaymentHandler(event) {
         document.getElementById("credit-card").style.display = "block";
         ccreq.setAttribute('required', '');
         ccreq.setAttribute('type', 'number');
-        ccreq.setAttribute('min', 0000000000000);
+        ccreq.setAttribute('min', 1000000000000);
         ccreq.setAttribute('max', 9999999999999999);
         cczip.setAttribute('required', '');
         cczip.setAttribute('type', 'number');
-        cczip.setAttribute('min', 00000);
+        cczip.setAttribute('min', 10000);
         cczip.setAttribute('max', 99999);
         cccvv.setAttribute('required', '');
         cccvv.setAttribute('type', 'number');
-        cccvv.setAttribute('min', 000);
+        cccvv.setAttribute('min', 100);
         cccvv.setAttribute('max', 999);
     } else if (event.target.value === 'bitcoin') {
         document.getElementById("bitcoin-div").style.display = "block";
@@ -141,54 +129,79 @@ const buildtools = document.getElementById('buildtools');
 const npmw = document.getElementById('npmw');
 
 
+function enableButtonDisplayTotal() {
+    submitButton.removeAttribute('disabled');
+    displayTotal();
+};
+
 // both on Tuesday 9am-12pm
 jsf.addEventListener('change', (e) => {
-    // console.log(e.target.checked);
     express.disabled = event.target.checked;
-    submitButton.removeAttribute('disabled');
+    enableButtonDisplayTotal();
 });
 
 express.addEventListener('change', (e) => {
     jsf.disabled = event.target.checked;
-    submitButton.removeAttribute('disabled');
+    enableButtonDisplayTotal();
 });
 
 
 // both on Tuesday 1pm-4pm
 node.addEventListener('change', (e) => {
     jslib.disabled = event.target.checked;
-    submitButton.removeAttribute('disabled');
+    enableButtonDisplayTotal();
 });
 
 jslib.addEventListener('change', (e) => {
     node.disabled = event.target.checked;
-    submitButton.removeAttribute('disabled');
+    enableButtonDisplayTotal();
 })
+
 
 // other activities
 mainconf.addEventListener('change', (e) => {
-    submitButton.removeAttribute('disabled');
+    enableButtonDisplayTotal();
 })
 buildtools.addEventListener('change', (e) => {
-    submitButton.removeAttribute('disabled');
+    enableButtonDisplayTotal();
 })
 npmw.addEventListener('change', (e) => {
-    submitButton.removeAttribute('disabled');
+    enableButtonDisplayTotal();
 })
 
-// we have to select an activity before the page will submit
+// event listener for submit button
+const selectActivity = document.createElement("label");
+const activitiesTotal = document.createElement("total-cost");
+const activitiesFieldset = document.getElementsByTagName('fieldset')[2];
 const submitButton = document.querySelector('button[type="submit"]')
 
 document.addEventListener('DOMContentLoaded',function() {
     submitButton.addEventListener('click', () => {
-        validateActivity();
         checkName();
+        checkEmail();
+        validateActivity();
+
     });
 },false);
 
-const selectActivity = document.createElement("label");
-const activitiesFieldset = document.getElementsByTagName('fieldset')[2];
+function displayTotal() {
+    let price = [].slice.call(document
+    .querySelectorAll('[data-price]'))
+    .reduce((total, checkbox) => {
+        return checkbox.checked ? total + parseInt(checkbox.dataset.price, 10) : total;
+    }, 0);
+    activitiesTotal.textContent = "Your total is $" + price;
+    activitiesTotal.setAttribute('type', 'text');
+    activitiesFieldset.appendChild(activitiesTotal);
 
+}
+displayTotal();
+
+// selectActivity not mounted at line 208
+
+// Check that the user has ticked an activity checkbox, if not, submit button is disabled
+
+// activities error message
 function activitiesError() {
     selectActivity.textContent = "Please select an activity";
     selectActivity.setAttribute('type', 'text');
@@ -196,28 +209,48 @@ function activitiesError() {
     activitiesFieldset.appendChild(selectActivity);
 }
 
-function validateActivity(event) {
+function validateActivity() {
     var checked = jsf.checked || express.checked || node.checked || jslib.checked || mainconf.checked || buildtools.checked || npmw.checked;
-    if (checked === true) {
+    if (checked === true || selectActivity.parentElement !== null) {
+        console.log("else", selectActivity.parentElement); // => activitiesFieldset
         activitiesFieldset.removeChild(selectActivity);
     } else {
         submitButton.setAttribute('disabled', '');
+        console.log("activitiesFieldset child nodes", activitiesFieldset.childNodes);
+        console.log("else - selectActivity parent", selectActivity.parentElement); // => null
         activitiesError();
     };
 }
 
+// Check that the user entered anything in the name field
 const name = document.getElementById('name');
 const nameLabel = document.getElementsByTagName('label')[0];
 const nameError = document.createElement('label');
 
 function checkName() {
-    console.log(name.value);
+    //console.log("name", name.value);
     if (name.value === '' || name === null) {
         nameError.textContent = "Please enter a name";
         nameError.setAttribute('type', 'text');
         nameError.setAttribute('class', 'error');
         nameLabel.appendChild(nameError);
-    } else {
+    } else if (nameError.parentElement !== null) {
         nameLabel.removeChild(nameError);
     }
 };
+
+// Check that the user entered anything in the email field
+const mail = document.getElementById('mail');
+const mailLabel = document.getElementsByTagName('label')[1];
+const mailError = document.createElement('label');
+
+function checkEmail() {
+    if (mail.value === '' || mail.value === null) {
+        mailError.textContent = "Please enter an email address";
+        mailError.setAttribute('type', 'text');
+        mailError.setAttribute('class', 'error');
+        mailLabel.appendChild(mailError);
+    } else if (mailError.parentElement !== null) {
+        mailLabel.removeChild(mailError);
+    }
+}
