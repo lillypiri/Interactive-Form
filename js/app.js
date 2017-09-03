@@ -1,5 +1,4 @@
-var addedField = document.createElement("input");
-var joblabel = document.createElement('label');
+
 const fieldset = document.getElementsByTagName('fieldset')[0];
 // when other is selected, it calls the addOtherField function
 document.addEventListener('DOMContentLoaded',function() {
@@ -27,15 +26,6 @@ function changeEventHandler(event) {
 }
 
 //TODO  CC error field limits & errors // does it work w/out js
-
-// adds input field when 'other' job title is selected
-function addOtherField() {
-    joblabel.textContent = 'Your job role';
-    addedField.setAttribute("type", "text");
-    addedField.setAttribute("class", "added-field");
-    fieldset.appendChild(joblabel)
-    fieldset.appendChild(addedField);
-}
 
 // No color options appear in the “Color” menu until the user chooses a T-Shirt theme. The “Color” menu reads “Please select a T-shirt theme” until a theme is selected from the “Design” menu.
 function hideColorOptions() {
@@ -90,6 +80,10 @@ document.addEventListener('DOMContentLoaded',function() {
     document.querySelector('select[name="user_payment"]').addEventListener('change', changePaymentHandler);
 },false);
 
+document.getElementById('cc-num').addEventListener('keyup', (event) => {
+    event.target.value = event.target.value.replace(/[^0-9]+/, '');
+})
+
 function changePaymentHandler(event) {
     hidePaymentFields();
     const ccreq = document.getElementById('cc-num');
@@ -105,9 +99,9 @@ function changePaymentHandler(event) {
         document.getElementById("credit-card").style.display = "block";
         ccreq.setAttribute('required', '');
         ccreq.setAttribute('type', 'tel');
-        ccreq.setAttribute('pattern', /\d*/);
-        // ccreq.setAttribute('min', 1000000000000);
-        // ccreq.setAttribute('max', 9999999999999999);
+        // ccreq.setAttribute('pattern', '\d+')
+        ccreq.setAttribute('minlength', 13);
+        ccreq.setAttribute('maxlength', 16);
         cczip.setAttribute('required', '');
         cczip.setAttribute('type', 'number');
         cczip.setAttribute('min', 10000);
@@ -174,17 +168,6 @@ jslib.addEventListener('change', (e) => {
 })
 
 
-// other activities
-mainconf.addEventListener('change', (e) => {
-    enableButtonDisplayTotal();
-})
-buildtools.addEventListener('change', (e) => {
-    enableButtonDisplayTotal();
-})
-npmw.addEventListener('change', (e) => {
-    enableButtonDisplayTotal();
-})
-
 // event listener for submit button
 const selectActivity = document.createElement("label");
 const activitiesTotal = document.createElement("total-cost");
@@ -196,7 +179,9 @@ document.addEventListener('DOMContentLoaded',function() {
         checkName();
         checkEmail();
         validateActivity();
-
+        checkCC();
+        checkZip();
+        checkCvv();
     });
 },false);
 
@@ -213,8 +198,6 @@ function displayTotal(data) {
 
 }
 displayTotal();
-
-// selectActivity not mounted at line 208
 
 // Check that the user has ticked an activity checkbox, if not, submit button is disabled
 
@@ -241,6 +224,55 @@ function validateActivity() {
         activitiesError();
     }
 }
+
+//Check that the user entered anything in the zip field
+const cvvfield = document.getElementById('cvv');
+const cvvClass = cvvfield.parentElement;
+const cvvError = document.createElement('label');
+
+function checkCvv() {
+    if (cvvfield.value === '' || cvvfield.value === null) {
+        cvvError.textContent = "Please enter a 3 digit CVV number";
+        //nameError.setAttribute('type', 'text');
+        cvvError.setAttribute('class', 'error');
+        cvvClass.appendChild(cvvError);
+    } else if (cvvError.parentElement !== null) {
+        cvvClass.removeChild(cvvError);
+    }
+};
+
+//Check that the user entered anything in the zip field
+const zipfield = document.getElementById('zip');
+const zipClass = zipfield.parentElement;
+const zipError = document.createElement('label');
+
+function checkZip() {
+    if (zipfield.value === '' || zipfield.value === null) {
+        zipError.textContent = "Please enter a valid 5 digit zip code";
+        //nameError.setAttribute('type', 'text');
+        zipError.setAttribute('class', 'error');
+        zipClass.appendChild(zipError);
+    } else if (zipError.parentElement !== null) {
+        zipClass.removeChild(zipError);
+    }
+};
+
+
+//Check that the user entered anything in the credit card
+const ccfield = document.getElementById('cc-num');
+const ccClass = ccfield.parentElement;
+const ccError = document.createElement('label');
+
+function checkCC() {
+    if (ccfield.value === '' || ccfield.value === null) {
+        ccError.textContent = "Please enter a valid Credit Card number.";
+        //nameError.setAttribute('type', 'text');
+        ccError.setAttribute('class', 'error');
+        ccClass.appendChild(ccError);
+    } else if (ccError.parentElement !== null) {
+        ccClass.removeChild(ccError);
+    }
+};
 
 // Check that the user entered anything in the name field
 const name = document.getElementById('name');
