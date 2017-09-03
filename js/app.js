@@ -1,26 +1,32 @@
 var addedField = document.createElement("input");
 var joblabel = document.createElement('label');
-console.log(document.getElementById("cornflowerblue"));
+const fieldset = document.getElementsByTagName('fieldset')[0];
 // when other is selected, it calls the addOtherField function
 document.addEventListener('DOMContentLoaded',function() {
     document.querySelector('select[name="user_title"]').addEventListener('change', changeEventHandler);
 },false);
 
+
+
+otherField = document.getElementById("other-input")
+otherFieldLabel = document.getElementById("other-input-label")
+
+otherFieldLabel.style.display = "none";
+otherField.style.display = "none";
+
 function changeEventHandler(event) {
     if(event.target.value === 'other') {
         console.log('Other selected');
-        addOtherField();
+        otherField.style.display = "block";
+        otherFieldLabel.style.display = "block";
     } else {
         console.log('You are a ' + event.target.value + '.');
-        if (addedField.parentElement !== null)  {
-            fieldset.removeChild(addedField);
-            fieldset.removeChild(joblabel);
-        }
+        otherField.style.display = "none";
+        otherFieldLabel.style.display = "none";
     }
 }
 
 //TODO  CC error field limits & errors // does it work w/out js
-
 
 // adds input field when 'other' job title is selected
 function addOtherField() {
@@ -73,8 +79,6 @@ function changeDesignHandler(event) {
 
 
 // When we choose a payment option, the chosen payment section is revealed and the other payment sections are hidden
-
-
 function hidePaymentFields() {
     document.getElementById("credit-card").style.display = "none";
     document.getElementById("bitcoin-div").style.display = "none";
@@ -100,9 +104,10 @@ function changePaymentHandler(event) {
     if (event.target.value === 'credit card') {
         document.getElementById("credit-card").style.display = "block";
         ccreq.setAttribute('required', '');
-        ccreq.setAttribute('type', 'number');
-        ccreq.setAttribute('min', 1000000000000);
-        ccreq.setAttribute('max', 9999999999999999);
+        ccreq.setAttribute('type', 'tel');
+        ccreq.setAttribute('pattern', /\d*/);
+        // ccreq.setAttribute('min', 1000000000000);
+        // ccreq.setAttribute('max', 9999999999999999);
         cczip.setAttribute('required', '');
         cczip.setAttribute('type', 'number');
         cczip.setAttribute('min', 10000);
@@ -128,13 +133,24 @@ const mainconf = document.getElementById('mainconf');
 const buildtools = document.getElementById('buildtools');
 const npmw = document.getElementById('npmw');
 
+const checkboxes = document.getElementsByName('checkbox');
+
+console.log(checkboxes);
 
 function enableButtonDisplayTotal() {
     submitButton.removeAttribute('disabled');
     displayTotal();
 };
 
-// both on Tuesday 9am-12pm
+for(var i=0; i < checkboxes.length; i++) {
+       checkboxes[i].addEventListener('change', (e) => {
+           let data = { data: e.target.dataset, checked: e.target.checked }
+           console.log('clicked checkbox, our data is: ', data)
+           enableButtonDisplayTotal(data);
+       });
+}
+
+//both on Tuesday 9am-12pm
 jsf.addEventListener('change', (e) => {
     express.disabled = event.target.checked;
     enableButtonDisplayTotal();
@@ -184,14 +200,15 @@ document.addEventListener('DOMContentLoaded',function() {
     });
 },false);
 
-function displayTotal() {
+function displayTotal(data) {
+
     let price = [].slice.call(document
     .querySelectorAll('[data-price]'))
     .reduce((total, checkbox) => {
         return checkbox.checked ? total + parseInt(checkbox.dataset.price, 10) : total;
     }, 0);
     activitiesTotal.textContent = "Your total is $" + price;
-    activitiesTotal.setAttribute('type', 'text');
+    //activitiesTotal.setAttribute('type', 'text');
     activitiesFieldset.appendChild(activitiesTotal);
 
 }
@@ -204,22 +221,25 @@ displayTotal();
 // activities error message
 function activitiesError() {
     selectActivity.textContent = "Please select an activity";
-    selectActivity.setAttribute('type', 'text');
+    //selectActivity.setAttribute('type', 'text');
     selectActivity.setAttribute('class', 'error');
     activitiesFieldset.appendChild(selectActivity);
 }
 
 function validateActivity() {
-    var checked = jsf.checked || express.checked || node.checked || jslib.checked || mainconf.checked || buildtools.checked || npmw.checked;
-    if (checked === true || selectActivity.parentElement !== null) {
-        console.log("else", selectActivity.parentElement); // => activitiesFieldset
-        activitiesFieldset.removeChild(selectActivity);
+    var activitySelected = jsf.checked || express.checked || node.checked || jslib.checked || mainconf.checked || buildtools.checked || npmw.checked;
+    // If a checkbox is checked AND selectActivity exists THEN remove selectActivity, ELSE disable the submit button AND show error
+
+    // If at least one activity is selected
+    if (activitySelected) {
+        // remove error label if it exists
+        if (selectActivity.parentElement) {
+            selectActivity.parentElement.removeChild(selectActivity);
+        }
     } else {
         submitButton.setAttribute('disabled', '');
-        console.log("activitiesFieldset child nodes", activitiesFieldset.childNodes);
-        console.log("else - selectActivity parent", selectActivity.parentElement); // => null
         activitiesError();
-    };
+    }
 }
 
 // Check that the user entered anything in the name field
@@ -231,7 +251,7 @@ function checkName() {
     //console.log("name", name.value);
     if (name.value === '' || name === null) {
         nameError.textContent = "Please enter a name";
-        nameError.setAttribute('type', 'text');
+        //nameError.setAttribute('type', 'text');
         nameError.setAttribute('class', 'error');
         nameLabel.appendChild(nameError);
     } else if (nameError.parentElement !== null) {
@@ -247,7 +267,7 @@ const mailError = document.createElement('label');
 function checkEmail() {
     if (mail.value === '' || mail.value === null) {
         mailError.textContent = "Please enter an email address";
-        mailError.setAttribute('type', 'text');
+        //mailError.setAttribute('type', 'text');
         mailError.setAttribute('class', 'error');
         mailLabel.appendChild(mailError);
     } else if (mailError.parentElement !== null) {
