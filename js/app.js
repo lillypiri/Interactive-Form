@@ -39,6 +39,8 @@ document.addEventListener('DOMContentLoaded',function() {
     tshirtSelect.addEventListener('change', changeDesignHandler);
 },false);
 
+document.getElementById("color").style.display = "none";
+document.getElementById("color-label").style.display = "none";
 
 // T-shirt color options are revealed based on the design selected.
 function changeDesignHandler(event) {
@@ -47,13 +49,19 @@ function changeDesignHandler(event) {
     if (event.target.value === 'selectdesign') {
         hideColorOptions();
         document.getElementById('color').options[0].selected = "selected";
+        document.getElementById("color").style.display = "none";
+        document.getElementById("color-label").style.display = "none";
     } else if (event.target.value === 'js puns') {
+        document.getElementById("color").style.display = "block";
+        document.getElementById("color-label").style.display = "block";
         document.getElementById("selecttheme").style.display = "none";
         document.getElementById("cornflowerblue").style.display = "block";
         document.getElementById("cornflowerblue").selected = "selected";
         document.getElementById("darkslategrey").style.display = "block";
         document.getElementById("gold").style.display = "block";
     } else if (event.target.value === 'heart js') {
+        document.getElementById("color").style.display = "block";
+        document.getElementById("color-label").style.display = "block";
         document.getElementById("selecttheme").style.display = "none";
         document.getElementById("tomato").style.display = "block";
         document.getElementById("tomato").selected = "selected";
