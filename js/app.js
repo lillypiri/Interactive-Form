@@ -1,14 +1,10 @@
-
-const fieldset = document.getElementsByTagName('fieldset')[0];
-// when other is selected, it calls the addOtherField function
+// when other is selected, a box to input other job is shown
 document.addEventListener('DOMContentLoaded',function() {
     document.querySelector('select[name="user_title"]').addEventListener('change', changeEventHandler);
 },false);
 
-
-
-otherField = document.getElementById("other-input")
-otherFieldLabel = document.getElementById("other-input-label")
+otherField = document.getElementById("other-title")
+otherFieldLabel = document.getElementById("other-title-label")
 
 otherFieldLabel.style.display = "none";
 otherField.style.display = "none";
@@ -24,8 +20,6 @@ function changeEventHandler(event) {
         otherFieldLabel.style.display = "none";
     }
 }
-
-//TODO  CC error field limits & errors // does it work w/out js
 
 // No color options appear in the “Color” menu until the user chooses a T-Shirt theme. The “Color” menu reads “Please select a T-shirt theme” until a theme is selected from the “Design” menu.
 function hideColorOptions() {
@@ -44,6 +38,7 @@ var tshirtSelect = document.querySelector('select[name="user_design"]');
 document.addEventListener('DOMContentLoaded',function() {
     tshirtSelect.addEventListener('change', changeDesignHandler);
 },false);
+
 
 // T-shirt color options are revealed based on the design selected.
 function changeDesignHandler(event) {
@@ -86,9 +81,9 @@ document.getElementById('cc-num').addEventListener('keyup', (event) => {
 
 function changePaymentHandler(event) {
     hidePaymentFields();
-    const ccreq = document.getElementById('cc-num');
-    const cczip = document.getElementById('zip');
-    const cccvv = document.getElementById('cvv');
+    var ccreq = document.getElementById('cc-num');
+    var cczip = document.getElementById('zip');
+    var cccvv = document.getElementById('cvv');
     ccreq.removeAttribute('required');
     cczip.removeAttribute('required');
     cccvv.removeAttribute('required');
@@ -99,13 +94,14 @@ function changePaymentHandler(event) {
         document.getElementById("credit-card").style.display = "block";
         ccreq.setAttribute('required', '');
         ccreq.setAttribute('type', 'tel');
-        // ccreq.setAttribute('pattern', '\d+')
         ccreq.setAttribute('minlength', 13);
         ccreq.setAttribute('maxlength', 16);
+
         cczip.setAttribute('required', '');
         cczip.setAttribute('type', 'number');
         cczip.setAttribute('min', 10000);
         cczip.setAttribute('max', 99999);
+
         cccvv.setAttribute('required', '');
         cccvv.setAttribute('type', 'number');
         cccvv.setAttribute('min', 100);
@@ -119,15 +115,15 @@ function changePaymentHandler(event) {
 
 
 // User cannot select two activities that are at the same time
-const jsf = document.getElementById('jsframeworks');
-const express = document.getElementById('express');
-const node = document.getElementById('node');
-const jslib = document.getElementById('jslib');
-const mainconf = document.getElementById('mainconf');
-const buildtools = document.getElementById('buildtools');
-const npmw = document.getElementById('npmw');
+var jsf = document.getElementById('jsframeworks');
+var express = document.getElementById('express');
+var node = document.getElementById('node');
+var jslib = document.getElementById('jslib');
+var mainconf = document.getElementById('mainconf');
+var buildtools = document.getElementById('buildtools');
+var npmw = document.getElementById('npmw');
 
-const checkboxes = document.getElementsByName('checkbox');
+var checkboxes = document.getElementsByName('checkbox');
 
 console.log(checkboxes);
 
@@ -169,10 +165,10 @@ jslib.addEventListener('change', (e) => {
 
 
 // event listener for submit button
-const selectActivity = document.createElement("label");
-const activitiesTotal = document.createElement("total-cost");
-const activitiesFieldset = document.getElementsByTagName('fieldset')[2];
-const submitButton = document.querySelector('button[type="submit"]')
+var selectActivity = document.createElement("label");
+var activitiesTotal = document.createElement("total-cost");
+var activitiesFieldset = document.getElementsByTagName('fieldset')[2];
+var submitButton = document.querySelector('button[type="submit"]')
 
 document.addEventListener('DOMContentLoaded',function() {
     submitButton.addEventListener('click', () => {
@@ -185,6 +181,48 @@ document.addEventListener('DOMContentLoaded',function() {
     });
 },false);
 
+
+// Check that the user entered anything in the name field
+var nameInput = document.getElementById('name');
+nameInput.addEventListener('keyup', checkName, false);
+var nameLabel = document.getElementsByTagName('label')[0];
+var nameError = document.createElement('label');
+
+
+function checkName() {
+    if (nameInput.value === '' || nameInput === null) {
+        nameError.textContent = "Please enter a name";
+        nameError.setAttribute('class', 'error');
+        nameLabel.appendChild(nameError);
+        console.log(nameError.parentElement);
+    } else if (nameError.parentElement !== null) {
+        console.log(nameError.parentElement);
+        console.log("test");
+        nameLabel.removeChild(nameError);
+    }
+};
+
+// Check that the user entered anything in the email field
+var mail = document.getElementById('mail');
+var mailLabel = document.getElementsByTagName('label')[1];
+var mailError = document.createElement('label');
+mail.addEventListener('keyup', checkEmail, false);
+
+function checkEmail() {
+    if (mail.value === '' || mail.value === null) {
+        mailError.textContent = "Please enter an email address";
+        mailError.setAttribute('class', 'error');
+        mailLabel.appendChild(mailError);
+        console.log(mailError.parentElement);
+    } else if (mailError.parentElement !== null) {
+        console.log(mailError.parentElement);
+        if (mailError.parentElement) {
+            mailError.parentElement.removeChild(mailError);
+        }
+    }
+}
+
+// display total price of activities selected
 function displayTotal(data) {
 
     let price = [].slice.call(document
@@ -193,22 +231,19 @@ function displayTotal(data) {
         return checkbox.checked ? total + parseInt(checkbox.dataset.price, 10) : total;
     }, 0);
     activitiesTotal.textContent = "Your total is $" + price;
-    //activitiesTotal.setAttribute('type', 'text');
     activitiesFieldset.appendChild(activitiesTotal);
 
 }
 displayTotal();
 
-// Check that the user has ticked an activity checkbox, if not, submit button is disabled
-
 // activities error message
 function activitiesError() {
     selectActivity.textContent = "Please select an activity";
-    //selectActivity.setAttribute('type', 'text');
     selectActivity.setAttribute('class', 'error');
     activitiesFieldset.appendChild(selectActivity);
 }
 
+// Check that the user has ticked an activity checkbox, if not, submit button is disabled
 function validateActivity() {
     var activitySelected = jsf.checked || express.checked || node.checked || jslib.checked || mainconf.checked || buildtools.checked || npmw.checked;
     // If a checkbox is checked AND selectActivity exists THEN remove selectActivity, ELSE disable the submit button AND show error
@@ -225,15 +260,14 @@ function validateActivity() {
     }
 }
 
-//Check that the user entered anything in the zip field
-const cvvfield = document.getElementById('cvv');
-const cvvClass = cvvfield.parentElement;
-const cvvError = document.createElement('label');
+//Check that the user entered anything in the CVV field
+var cvvfield = document.getElementById('cvv');
+var cvvClass = cvvfield.parentElement;
+var cvvError = document.createElement('label');
 
 function checkCvv() {
     if (cvvfield.value === '' || cvvfield.value === null) {
         cvvError.textContent = "Please enter a 3 digit CVV number";
-        //nameError.setAttribute('type', 'text');
         cvvError.setAttribute('class', 'error');
         cvvClass.appendChild(cvvError);
     } else if (cvvError.parentElement !== null) {
@@ -242,14 +276,13 @@ function checkCvv() {
 };
 
 //Check that the user entered anything in the zip field
-const zipfield = document.getElementById('zip');
-const zipClass = zipfield.parentElement;
-const zipError = document.createElement('label');
+var zipfield = document.getElementById('zip');
+var zipClass = zipfield.parentElement;
+var zipError = document.createElement('label');
 
 function checkZip() {
     if (zipfield.value === '' || zipfield.value === null) {
         zipError.textContent = "Please enter a valid 5 digit zip code";
-        //nameError.setAttribute('type', 'text');
         zipError.setAttribute('class', 'error');
         zipClass.appendChild(zipError);
     } else if (zipError.parentElement !== null) {
@@ -257,52 +290,17 @@ function checkZip() {
     }
 };
 
-
-//Check that the user entered anything in the credit card
-const ccfield = document.getElementById('cc-num');
-const ccClass = ccfield.parentElement;
-const ccError = document.createElement('label');
+//Check that the user entered anything in the credit card field
+var ccfield = document.getElementById('cc-num');
+var ccClass = ccfield.parentElement;
+var ccError = document.createElement('label');
 
 function checkCC() {
     if (ccfield.value === '' || ccfield.value === null) {
         ccError.textContent = "Please enter a valid Credit Card number.";
-        //nameError.setAttribute('type', 'text');
         ccError.setAttribute('class', 'error');
         ccClass.appendChild(ccError);
     } else if (ccError.parentElement !== null) {
         ccClass.removeChild(ccError);
     }
 };
-
-// Check that the user entered anything in the name field
-const name = document.getElementById('name');
-const nameLabel = document.getElementsByTagName('label')[0];
-const nameError = document.createElement('label');
-
-function checkName() {
-    //console.log("name", name.value);
-    if (name.value === '' || name === null) {
-        nameError.textContent = "Please enter a name";
-        //nameError.setAttribute('type', 'text');
-        nameError.setAttribute('class', 'error');
-        nameLabel.appendChild(nameError);
-    } else if (nameError.parentElement !== null) {
-        nameLabel.removeChild(nameError);
-    }
-};
-
-// Check that the user entered anything in the email field
-const mail = document.getElementById('mail');
-const mailLabel = document.getElementsByTagName('label')[1];
-const mailError = document.createElement('label');
-
-function checkEmail() {
-    if (mail.value === '' || mail.value === null) {
-        mailError.textContent = "Please enter an email address";
-        //mailError.setAttribute('type', 'text');
-        mailError.setAttribute('class', 'error');
-        mailLabel.appendChild(mailError);
-    } else if (mailError.parentElement !== null) {
-        mailLabel.removeChild(mailError);
-    }
-}
