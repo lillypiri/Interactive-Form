@@ -2,11 +2,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     function onJobChange(event) {
         if (event.target.value === 'other') {
-            console.log('Other selected');
             otherField.style.display = 'block';
             otherFieldLabel.style.display = 'block';
         } else {
-            console.log('You are a ' + event.target.value + '.');
             otherField.style.display = 'none';
             otherFieldLabel.style.display = 'none';
         }
@@ -79,7 +77,13 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('bitcoin-div').style.display = 'none';
         document.getElementById('paypal-div').style.display = 'none';
     }
-    hidePaymentFields();
+
+    // Hide bitcoin and paypal divs intially
+    function hideBitCoinPaypal() {
+        document.getElementById('bitcoin-div').style.display = 'none';
+        document.getElementById('paypal-div').style.display = 'none';
+    }
+    hideBitCoinPaypal();
 
     document.getElementById('cc-num').addEventListener('keyup', function(event) {
         event.target.value = event.target.value.replace(/[^0-9]+/, '');
@@ -94,8 +98,8 @@ document.addEventListener('DOMContentLoaded', function() {
         cczip.removeAttribute('required');
         cccvv.removeAttribute('required');
 
-        console.log(event.target.value);
         if (event.target.value === 'credit card') {
+            removeSelectPaymentError();
             document.getElementById('credit-card').style.display = 'block';
             ccreq.setAttribute('required', '');
             ccreq.setAttribute('type', 'tel');
@@ -112,13 +116,23 @@ document.addEventListener('DOMContentLoaded', function() {
             cccvv.setAttribute('min', 100);
             cccvv.setAttribute('max', 999);
         } else if (event.target.value === 'bitcoin') {
+            removeSelectPaymentError();
             document.getElementById('bitcoin-div').style.display = 'block';
         } else if (event.target.value === 'paypal') {
+            removeSelectPaymentError();
             document.getElementById('paypal-div').style.display = 'block';
         }
     }
     document.querySelector('select[name="user_payment"]').addEventListener('change', changePaymentHandler);
 
+    // Remove the select payment error
+    function removeSelectPaymentError() {
+        if (npsError.parentElement !== null) {
+            if (npsError.parentElement) {
+                paymentFieldset.removeChild(npsError);
+            }
+        }
+    }
     // User cannot select two activities that are at the same time
     var jsf = document.getElementById('jsframeworks');
     var express = document.getElementById('express');
@@ -138,8 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     for (var i = 0; i < checkboxes.length; i++) {
         checkboxes[i].addEventListener('change', function(e) {
-            let data = { data: e.target.dataset, checked: e.target.checked };
-            console.log('clicked checkbox, our data is: ', data);
+            var data = { data: e.target.dataset, checked: e.target.checked };
             enableButtonDisplayTotal(data);
         });
     }
@@ -179,6 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
         checkCC();
         checkZip();
         checkCvv();
+        checkPaymentMethod();
     });
 
     // Check in real time that the user entered a name at all and is longer than two characters
@@ -187,14 +201,11 @@ document.addEventListener('DOMContentLoaded', function() {
             nameError.textContent = 'Please enter a name';
             nameError.setAttribute('class', 'error');
             nameLabel.appendChild(nameError);
-            console.log(nameError.parentElement);
         } else if (nameInput.value.length < 2) {
             nameError.textContent = 'Please enter a name longer than two characters';
             nameError.setAttribute('class', 'error');
             nameLabel.appendChild(nameError);
         } else if (nameError.parentElement !== null) {
-            console.log(nameError.parentElement);
-            console.log('test');
             nameLabel.removeChild(nameError);
         }
     }
@@ -209,14 +220,11 @@ document.addEventListener('DOMContentLoaded', function() {
             mailError.textContent = 'Please enter an email address';
             mailError.setAttribute('class', 'error');
             mailLabel.appendChild(mailError);
-            console.log(mailError.parentElement);
         } else if (!mail.value.match(emailPattern)) {
             mailError.textContent = 'Please enter a valid email address';
             mailError.setAttribute('class', 'error');
             mailLabel.appendChild(mailError);
-            console.log(mailError.parentElement);
         } else if (mailError.parentElement !== null) {
-            console.log(mailError.parentElement);
             if (mailError.parentElement) {
                 mailError.parentElement.removeChild(mailError);
             }
@@ -230,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // display total price of activities selected
     function displayTotal(data) {
-        let price = [].slice.call(document.querySelectorAll('[data-price]')).reduce(function(total, checkbox) {
+        var price = [].slice.call(document.querySelectorAll('[data-price]')).reduce(function(total, checkbox) {
             return checkbox.checked ? total + parseInt(checkbox.dataset.price, 10) : total;
         }, 0);
         activitiesTotal.textContent = 'Your total is $' + price;
@@ -332,4 +340,19 @@ document.addEventListener('DOMContentLoaded', function() {
     var ccClass = ccfield.parentElement;
     var ccError = document.createElement('label');
     ccfield.addEventListener('keyup', checkCC, false);
+
+    // Check that the user selected a payment method
+    function checkPaymentMethod() {
+        if (noPaymentSelected.innerHTML === "Select Payment Method") {
+            npsError.textContent = "Please select a payment method";
+            npsError.setAttribute('class', 'error');
+            paymentFieldset.appendChild(npsError);
+            console.log(selectID.value);
+        }
+    }
+
+    var noPaymentSelected = document.getElementById('select-method');
+    var paymentFieldset = document.getElementsByTagName('fieldset')[3];
+    var npsError = document.createElement('label');
+    var selectID = document.getElementsByName('user_payment');
 });

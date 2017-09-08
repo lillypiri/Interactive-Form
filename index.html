@@ -88,13 +88,13 @@
         <label><input id="npmw" type="checkbox" name="checkbox" data-price="100"> npm Workshop — Wednesday 1pm-4pm, $100</label>
 
       </fieldset>
-      <fieldset>
+      <fieldset class="payment-info">
         <legend>Payment Info</legend>
 
         <label for="payment">I'm going to pay with:</label>
         <select id="payment" name="user_payment">
-          <option value="select_method">Select Payment Method</option>
-          <option value="credit card">Credit Card</option>
+          <option id="select-method" value="select_method">Select Payment Method</option>
+          <option selected="selected" value="credit card">Credit Card</option>
           <option value="paypal">PayPal</option>
           <option value="bitcoin">Bitcoin</option>
         </select>
