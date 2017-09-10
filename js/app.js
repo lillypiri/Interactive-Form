@@ -85,9 +85,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     hideBitCoinPaypal();
 
-    document.getElementById('cc-num').addEventListener('keyup', function(event) {
+    // strips anything that's not a number out of a text field
+    function numbersOnly(event) {
         event.target.value = event.target.value.replace(/[^0-9]+/, '');
-    });
+    };
+
+    document.getElementById('cc-num').addEventListener('keyup', numbersOnly);
+    document.getElementById('zip').addEventListener('keyup', numbersOnly);
+    document.getElementById('cvv').addEventListener('keyup', numbersOnly);
 
     function changePaymentHandler(event) {
         hidePaymentFields();
