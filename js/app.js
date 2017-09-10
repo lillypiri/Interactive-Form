@@ -158,24 +158,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     //both on Tuesday 9am-12pm
-    jsf.addEventListener('change', function(e) {
+    jsf.addEventListener('change', function(event) {
         express.disabled = event.target.checked;
+        express.parentElement.style.setProperty("text-decoration", event.target.checked ? "line-through" : "");
         enableButtonDisplayTotal();
     });
 
-    express.addEventListener('change', function(e) {
+    express.addEventListener('change', function(event) {
         jsf.disabled = event.target.checked;
+        jsf.parentElement.style.setProperty("text-decoration", event.target.checked ? "line-through" : "");
         enableButtonDisplayTotal();
     });
 
     // both on Tuesday 1pm-4pm
-    node.addEventListener('change', function(e) {
+    node.addEventListener('change', function(event) {
         jslib.disabled = event.target.checked;
+        jslib.parentElement.style.setProperty("text-decoration", event.target.checked ? "line-through" : "");
         enableButtonDisplayTotal();
     });
 
-    jslib.addEventListener('change', function(e) {
+    jslib.addEventListener('change', function(event) {
         node.disabled = event.target.checked;
+        node.parentElement.style.setProperty("text-decoration", event.target.checked ? "line-through" : "");
         enableButtonDisplayTotal();
     });
 
@@ -183,59 +187,67 @@ document.addEventListener('DOMContentLoaded', function() {
     var selectActivity = document.createElement('label');
     var activitiesTotal = document.createElement('total-cost');
     var activitiesFieldset = document.getElementsByTagName('fieldset')[2];
-    var submitButton = document.querySelector('button[type="submit"]');
 
-    submitButton.addEventListener('click', function() {
-        checkName();
-        checkEmail();
-        validateActivity();
-        checkCC();
-        checkZip();
-        checkCvv();
-        checkPaymentMethod();
+    var theForm = document.querySelector('form');
+
+    theForm.addEventListener('submit', function(event) {
+        if (!validateActivity() || !checkPaymentMethod()) {
+            event.stopPropagation();
+            event.preventDefault();
+        };
     });
 
+    var submitButton = document.querySelector('button[type="submit"]');
+
     // Check in real time that the user entered a name at all and is longer than two characters
-    function checkName() {
-        if (nameInput.value === '' || nameInput === null) {
-            nameError.textContent = 'Please enter a name';
-            nameError.setAttribute('class', 'error');
-            nameLabel.appendChild(nameError);
-        } else if (nameInput.value.length < 2) {
-            nameError.textContent = 'Please enter a name longer than two characters';
-            nameError.setAttribute('class', 'error');
-            nameLabel.appendChild(nameError);
-        } else if (nameError.parentElement !== null) {
-            nameLabel.removeChild(nameError);
-        }
-    }
     var nameInput = document.getElementById('name');
-    nameInput.addEventListener('keyup', checkName, false);
     var nameLabel = document.getElementsByTagName('label')[0];
     var nameError = document.createElement('label');
 
+    nameInput.addEventListener("input", function (event) {
+        if (nameInput.value === '' || nameInput === null) {
+            nameInput.setCustomValidity("Please enter a name");
+            nameError.textContent = 'Please enter a name';
+            nameError.setAttribute('class', 'error');
+            nameLabel.appendChild(nameError);
+            return false
+        } else if (nameInput.value.length < 2) {
+            nameInput.setCustomValidity("Please enter a name longer than two characters");
+            nameError.textContent = 'Please enter a name longer than two characters';
+            nameError.setAttribute('class', 'error');
+            nameLabel.appendChild(nameError);
+            return false
+        } else if (nameError.parentElement !== null) {
+            nameInput.setCustomValidity("");
+            nameLabel.removeChild(nameError);
+        }
+    });
+
+
     // Check that the user entered anything in the email field
-    function checkEmail() {
+    var mail = document.getElementById('mail');
+    var mailLabel = document.getElementsByTagName('label')[1];
+    var mailError = document.createElement('label');
+    var emailPattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+
+    mail.addEventListener("input", function (event) {
         if (mail.value === '' || mail.value === null) {
+            mail.setCustomValidity("Please enter an email address");
             mailError.textContent = 'Please enter an email address';
             mailError.setAttribute('class', 'error');
             mailLabel.appendChild(mailError);
         } else if (!mail.value.match(emailPattern)) {
+            mail.setCustomValidity("Please enter a valid email address");
             mailError.textContent = 'Please enter a valid email address';
             mailError.setAttribute('class', 'error');
             mailLabel.appendChild(mailError);
         } else if (mailError.parentElement !== null) {
+            mail.setCustomValidity("");
             if (mailError.parentElement) {
                 mailError.parentElement.removeChild(mailError);
             }
         }
-    }
-    var mail = document.getElementById('mail');
-    var mailLabel = document.getElementsByTagName('label')[1];
-    var mailError = document.createElement('label');
-    mail.addEventListener('keyup', checkEmail, false);
-    var emailPattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
-
+});
     // display total price of activities selected
     function displayTotal(data) {
         var price = [].slice.call(document.querySelectorAll('[data-price]')).reduce(function(total, checkbox) {
@@ -273,26 +285,36 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             submitButton.setAttribute('disabled', '');
             activitiesError();
+            return false;
         }
+        return true;
     }
 
     //Check that the user entered anything in the CVV field
     function checkCvv() {
         if (cvvfield.value === '' || cvvfield.value === null) {
+            cvvfield.setCustomValidity("Please enter a CVV number");
             cvvError.textContent = 'Please enter a CVV number';
             cvvError.setAttribute('class', 'error');
             cvvClass.appendChild(cvvError);
+            return false;
         } else if (cvvfield.value.length < 3) {
+            cvvfield.setCustomValidity("Please enter a 3 digit CVV number");
             cvvError.textContent = 'Please enter a 3 digit CVV number';
             cvvError.setAttribute('class', 'error');
             cvvClass.appendChild(cvvError);
+            return false;
         } else if (cvvfield.value.length > 3) {
+            cvvfield.setCustomValidity("Please enter only 3 digits");
             cvvError.textContent = 'Please enter only 3 digits';
             cvvError.setAttribute('class', 'error');
             cvvClass.appendChild(cvvError);
+            return false;
         } else if (cvvError.parentElement !== null) {
+            cvvfield.setCustomValidity("");
             cvvClass.removeChild(cvvError);
         }
+        return true;
     }
     var cvvfield = document.getElementById('cvv');
     var cvvClass = cvvfield.parentElement;
@@ -302,20 +324,28 @@ document.addEventListener('DOMContentLoaded', function() {
     //Check that the user entered anything in the zip field
     function checkZip() {
         if (zipfield.value === '' || zipfield.value === null) {
+            zipfield.setCustomValidity("Please enter a valid 5 digit zip code");
             zipError.textContent = 'Please enter a valid 5 digit zip code';
             zipError.setAttribute('class', 'error');
             zipClass.appendChild(zipError);
+            return false;
         } else if (zipfield.value.length < 5) {
+            zipfield.setCustomValidity("Please enter a zip code that is at least 5 digits long");
             zipError.textContent = 'Please enter a zip code that is at least 5 digits long';
             zipError.setAttribute('class', 'error');
             zipClass.appendChild(zipError);
+            return false;
         } else if (zipfield.value.length > 5) {
+            zipfield.setCustomValidity("Please enter a zip code that is no more than 5 digits long");
             zipError.textContent = 'Please enter a zip code that is no more than 5 digits long';
             zipError.setAttribute('class', 'error');
             zipClass.appendChild(zipError);
+            return false;
         } else if (zipError.parentElement !== null) {
+            zipfield.setCustomValidity("");
             zipClass.removeChild(zipError);
         }
+        return true;
     }
     var zipfield = document.getElementById('zip');
     var zipClass = zipfield.parentElement;
@@ -325,16 +355,28 @@ document.addEventListener('DOMContentLoaded', function() {
     //Check that the user entered anything in the credit card field
     function checkCC() {
         if (ccfield.value === '' || ccfield.value === null) {
+            ccfield.setCustomValidity("Please enter a valid Credit Card number.");
             ccError.textContent = 'Please enter a valid Credit Card number.';
             ccError.setAttribute('class', 'error');
             ccClass.appendChild(ccError);
+            return false;
         } else if (ccfield.value.length < 13) {
+            ccfield.setCustomValidity("Please enter a number that is at least 13 digits long.");
             ccError.textContent = 'Please enter a number that is at least 13 digits long.';
             ccError.setAttribute('class', 'error');
             ccClass.appendChild(ccError);
+            return false;
+        } else if (ccfield.value.length > 16) {
+            ccfield.setCustomValidity("Please enter a number that is no more than 16 digits long.");
+            ccError.textContent = 'Please enter a number that is no more than 16 digits long.';
+            ccError.setAttribute('class', 'error');
+            ccClass.appendChild(ccError);
+            return false;
         } else if (ccError.parentElement !== null) {
+            ccfield.setCustomValidity("");
             ccClass.removeChild(ccError);
         }
+        return true;
     }
     var ccfield = document.getElementById('cc-num');
     var ccClass = ccfield.parentElement;
@@ -343,15 +385,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Check that the user selected a payment method
     function checkPaymentMethod() {
-        if (noPaymentSelected.innerHTML === "Select Payment Method") {
+        if (paymentSelector.value === "select_method") {
             npsError.textContent = "Please select a payment method";
             npsError.setAttribute('class', 'error');
             paymentFieldset.appendChild(npsError);
-            console.log(selectID.value);
+            return false;
+        } else if (paymentSelector.value === "credit card") {
+            return checkCC() && checkZip() && checkCvv();
         }
+        return true;
     }
 
-    var noPaymentSelected = document.getElementById('select-method');
+    var paymentSelector = document.getElementById('payment');
+
+    paymentSelector.addEventListener('change', function () {
+        ccfield.setCustomValidity("");
+        zipfield.setCustomValidity("");
+        cvvfield.setCustomValidity("");
+    });
+
     var paymentFieldset = document.getElementsByTagName('fieldset')[3];
     var npsError = document.createElement('label');
     var selectID = document.getElementsByName('user_payment');
