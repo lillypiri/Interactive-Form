@@ -274,6 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
         selectActivity.textContent = 'Please select an activity';
         selectActivity.setAttribute('class', 'error');
         activitiesFieldset.appendChild(selectActivity);
+        window.scrollTo(0, activitiesFieldset.offsetTop);
     }
 
     // Check that the user has ticked an activity checkbox, if not, submit button is disabled
