@@ -99,24 +99,19 @@ document.addEventListener('DOMContentLoaded', function() {
         var ccreq = document.getElementById('cc-num');
         var cczip = document.getElementById('zip');
         var cccvv = document.getElementById('cvv');
-        ccreq.removeAttribute('required');
-        cczip.removeAttribute('required');
-        cccvv.removeAttribute('required');
 
         if (event.target.value === 'credit card') {
             removeSelectPaymentError();
             document.getElementById('credit-card').style.display = 'block';
-            ccreq.setAttribute('required', '');
+
             ccreq.setAttribute('type', 'tel');
             ccreq.setAttribute('minlength', 13);
             ccreq.setAttribute('maxlength', 16);
 
-            cczip.setAttribute('required', '');
             cczip.setAttribute('type', 'number');
             cczip.setAttribute('min', 10000);
             cczip.setAttribute('max', 99999);
 
-            cccvv.setAttribute('required', '');
             cccvv.setAttribute('type', 'number');
             cccvv.setAttribute('min', 100);
             cccvv.setAttribute('max', 999);
@@ -196,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var theForm = document.querySelector('form');
 
     theForm.addEventListener('submit', function(event) {
-        if (!validateActivity() || !checkPaymentMethod()) {
+        if (!checkName() || !checkMail() || !validateActivity() || !checkPaymentMethod()) {
             event.stopPropagation();
             event.preventDefault();
         };
@@ -209,8 +204,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var nameLabel = document.getElementsByTagName('label')[0];
     var nameError = document.createElement('label');
 
-    nameInput.addEventListener("input", function (event) {
+    function checkName(event) {
         if (nameInput.value === '' || nameInput === null) {
+            window.scrollTo(0, nameInput.parentElement.offsetTop);
             nameInput.setCustomValidity("Please enter a name");
             nameError.textContent = 'Please enter a name';
             nameError.setAttribute('class', 'error');
@@ -221,12 +217,15 @@ document.addEventListener('DOMContentLoaded', function() {
             nameError.textContent = 'Please enter a name longer than two characters';
             nameError.setAttribute('class', 'error');
             nameLabel.appendChild(nameError);
+            window.scrollTo(0, nameInput.parentElement.offsetTop);
             return false
         } else if (nameError.parentElement !== null) {
             nameInput.setCustomValidity("");
             nameLabel.removeChild(nameError);
         }
-    });
+        return true
+    };
+    nameInput.addEventListener("input", checkName);
 
 
     // Check that the user entered anything in the email field
@@ -235,24 +234,31 @@ document.addEventListener('DOMContentLoaded', function() {
     var mailError = document.createElement('label');
     var emailPattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
 
-    mail.addEventListener("input", function (event) {
+    function checkMail(event) {
         if (mail.value === '' || mail.value === null) {
             mail.setCustomValidity("Please enter an email address");
             mailError.textContent = 'Please enter an email address';
             mailError.setAttribute('class', 'error');
             mailLabel.appendChild(mailError);
+            window.scrollTo(0, mail.parentElement.offsetTop);
+            return false
         } else if (!mail.value.match(emailPattern)) {
             mail.setCustomValidity("Please enter a valid email address");
             mailError.textContent = 'Please enter a valid email address';
             mailError.setAttribute('class', 'error');
             mailLabel.appendChild(mailError);
+            window.scrollTo(0, mail.parentElement.offsetTop);
+            return false
         } else if (mailError.parentElement !== null) {
             mail.setCustomValidity("");
             if (mailError.parentElement) {
                 mailError.parentElement.removeChild(mailError);
             }
         }
-});
+        return true
+    }
+    mail.addEventListener("input", checkMail);
+
     // display total price of activities selected
     function displayTotal(data) {
         var price = [].slice.call(document.querySelectorAll('[data-price]')).reduce(function(total, checkbox) {
